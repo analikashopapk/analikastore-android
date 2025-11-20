@@ -32,27 +32,12 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("com.airbnb.android:lottie:5.2.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("io.coil-kt:coil:2.4.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
-    implementation("com.google.firebase:firebase-messaging:23.2.4")
-}
-dependencies {
-    // Use Firebase BoM to manage versions centrally
+    // Firebase BOM — put this near the top of dependencies
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    // Add the libraries you need WITHOUT versions (BoM controls versions)
+    // Firebase libraries (no explicit versions when using BoM)
     implementation("com.google.firebase:firebase-messaging-ktx")
-    // If you had non-ktx usage, you can also use:
-    // implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics-ktx") // optional if you use analytics
 
-    // ... keep your other dependencies unchanged ...
+    // other dependencies (leave as they are) ...
 }
