@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AnalikaStoreApp"
+rootProject.name ="AnalikaStoreApp"
 include(":app")
