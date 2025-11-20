@@ -8,12 +8,11 @@ on:
 
 env:
   ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-  # Make sure JAVA_HOME is provided by setup-java
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40
 
     steps:
       - uses: actions/checkout@v4
@@ -24,33 +23,24 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Android commandline tools
-        run: |
-          set -e
-          sudo mkdir -p /usr/local/lib/android
-          sudo chown -R $USER:$USER /usr/local/lib/android
-          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
-          cd $ANDROID_SDK_ROOT/cmdline-tools
-          # Download commandline tools (official Google package)
-          curl -fSLo commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
-          unzip -q commandlinetools.zip
-          # The zip extracts a folder named 'cmdline-tools'; move to cmdline-tools/latest
-          mkdir -p latest
-          mv cmdline-tools/* latest/ || true
-          rm commandlinetools.zip
-          export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
-          sdkmanager --version || true
+      - name: Set up Android SDK and packages
+        uses: android-actions/setup-sdk@v2
+        with:
+          sdk_root: ${{ env.ANDROID_SDK_ROOT }}
+          # packages to install; adjust versions if your project needs different ones
+          packages: |
+            platform-tools
+            platforms;android-34
+            platforms;android-33
+            build-tools;34.0.0
+            build-tools;33.0.1
+            cmdline-tools;9.1.0
 
-      - name: Install Android SDK packages
-        env:
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
-          PATH: ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin:${{ env.PATH }}
+      - name: Accept Android SDK licenses
         run: |
-          set -e
-          # Ensure sdkmanager is available
-          yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
-          # Install required platforms and build tools (adjust versions if your project needs different)
-          sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-34" "build-tools;34.0.0" "build-tools;33.0.1" "platforms;android-33"
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
+        env:
+          PATH: ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin:${{ env.PATH }}
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -67,6 +57,8 @@ jobs:
         with:
           gradle-version: 8.1
           arguments: ":app:assembleDebug"
+        env:
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
 
       - name: Upload artifact
         if: always()
