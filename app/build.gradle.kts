@@ -4,11 +4,6 @@ plugins {
     id("com.google.gms.google-services") apply false
 }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 android {
     compileSdk = 34
 
@@ -35,11 +30,6 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
-    // If you use viewBinding or compose, enable here
-    // buildFeatures {
-    //     viewBinding = true
-    // }
 }
 
 dependencies {
