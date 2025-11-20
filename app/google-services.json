@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "938064366726",
+    "project_id": "analikashop-b31d6",
+    "storage_bucket": "analikashop-b31d6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:938064366726:android:b12d3ea6df15cdb008d507",
+        "android_client_info": {
+          "package_name": "com.analikastore.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbn_9KE_2Dc9mSbtH-NW9cfqktsEgbxiU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
