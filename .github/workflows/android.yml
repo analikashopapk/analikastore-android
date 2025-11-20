@@ -1,10 +1,9 @@
-name: Android CI (robust)
+name: Android CI (defensive)
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,47 +12,68 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Install Java
+      - name: Ensure gradlew is executable
+        run: |
+          if [ -f "./gradlew" ]; then chmod +x ./gradlew; fi
+          ls -la
+
+      - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
 
-      - name: Install Android SDK command-line tools
-        # set ANDROID_SDK_ROOT for this step using runner.temp evaluated at runtime
+      - name: Install Android SDK cmdline tools
         env:
           ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
+          set -e
           mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools"
           cd "${ANDROID_SDK_ROOT}/cmdline-tools"
           curl -sSfL "https://dl.google.com/android/repository/commandlinetools-linux-101.0.0_latest.zip" -o cmdline.zip
           unzip -q cmdline.zip
-          mv cmdline-tools latest
+          mv cmdline-tools latest || true
         shell: bash
 
-      - name: Accept licenses & install SDK packages
+      - name: Install SDK packages and accept licenses
         env:
           ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
           yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" "tools" "patcher;v4" --verbose
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" "patcher;v4" --verbose
         shell: bash
 
-      - name: Add gradle wrapper execute permission
-        run: chmod +x ./gradlew || true
+      - name: Cache Gradle & dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            .gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
-      - name: Print environment (for debugging)
+      - name: Show environment & Gradle wrapper
         env:
           ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
-          echo "JAVA_HOME=$(java -version 2>&1 | head -n 1)"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          ./gradlew -v
-        shell: bash
+          ./gradlew -v || true
+          echo "Files in repo root:"
+          ls -la
+          echo "Files in gradle/wrapper:"
+          ls -la gradle/wrapper || true
 
-      - name: Build Debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace --no-daemon
+      - name: Build Debug APK (with stacktrace)
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+          GRADLE_OPTS: "-Xmx1536m"
+        run: |
+          ./gradlew :app:assembleDebug --stacktrace --no-daemon
         shell: bash
 
       - name: Upload artifact
