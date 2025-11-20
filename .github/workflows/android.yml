@@ -1,26 +1,60 @@
-name: Android CI
+name: Android CI (robust)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    env:
+      JAVA_HOME: /opt/hostedtoolcache/jdk/17.0.18/x64
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 11
-      uses: actions/setup-java@v4
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Android SDK command-line tools
+        run: |
+          mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools"
+          cd "${ANDROID_SDK_ROOT}/cmdline-tools"
+          curl -sSfL "https://dl.google.com/android/repository/commandlinetools-linux-101.0.0_latest.zip" -o cmdline.zip
+          unzip -q cmdline.zip
+          mv cmdline-tools latest
+        shell: bash
+
+      - name: Accept licenses & install SDK packages
+        run: |
+          yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" "tools" "patcher;v4" --verbose
+        shell: bash
+
+      - name: Add gradle wrapper execute permission
+        run: chmod +x ./gradlew || true
+
+      - name: Print environment (for debugging)
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ./gradlew -v
+        shell: bash
+
+      - name: Build Debug APK
+        run: ./gradlew :app:assembleDebug --stacktrace --no-daemon
+        shell: bash
+
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
