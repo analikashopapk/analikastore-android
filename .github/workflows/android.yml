@@ -6,9 +6,13 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +21,19 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+
+      - name: Install Android SDK tools (sdkmanager)
+        run: |
+          sudo mkdir -p /usr/local/lib/android
+          sudo chown -R $USER:$USER /usr/local/lib/android
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          cd $ANDROID_SDK_ROOT
+          # Install commandline tools package (if missing)
+          yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} "platform-tools" "platforms;android-34" "build-tools;34.0.0" "build-tools;33.0.1" "cmdline-tools;9.1.0" "extras;android;m2repository"
+
+      - name: Accept Android SDK licenses
+        run: |
+          yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
@@ -28,7 +45,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # Use the Gradle action to install a specific compatible Gradle version (8.1)
       - name: Build with Gradle 8.1
         uses: gradle/gradle-build-action@v2
         with:
