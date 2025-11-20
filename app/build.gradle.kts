@@ -6,6 +6,7 @@ plugins {
 
 android {
     compileSdk = 34
+    namespace = "com.analikastore.app"
 
     defaultConfig {
         applicationId = "com.analikastore.app"
