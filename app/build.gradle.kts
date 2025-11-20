@@ -1,11 +1,15 @@
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") apply false
+}
+
+repositories {
+    google()
+    mavenCentral()
 }
 
 android {
-    namespace = "com.analikastore.app"
     compileSdk = 34
 
     defaultConfig {
@@ -17,8 +21,9 @@ android {
     }
 
     buildTypes {
-        release {
+        getByName("release") {
             isMinifyEnabled = false
+            // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -26,18 +31,37 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    // If you use viewBinding or compose, enable here
+    // buildFeatures {
+    //     viewBinding = true
+    // }
 }
 
 dependencies {
-    // Firebase BOM — put this near the top of dependencies
+    // Firebase BOM (manage firebase versions centrally)
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    // Firebase libraries (no explicit versions when using BoM)
+    // Firebase libraries (no explicit versions when using BOM)
     implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx") // optional if you use analytics
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // other dependencies (leave as they are) ...
+    // Common Android libraries — keep these or update to match your project
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.recyclerview:recyclerview:1.3.0")
+
+    // Networking & image loading placeholders (adjust if your project differs)
+    implementation("io.coil-kt:coil:2.4.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Optional: logging, lifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 }
