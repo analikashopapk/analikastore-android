@@ -9,9 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      JAVA_HOME: /opt/hostedtoolcache/jdk/17.0.18/x64
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
 
     steps:
       - name: Checkout
@@ -24,6 +21,9 @@ jobs:
           java-version: 17
 
       - name: Install Android SDK command-line tools
+        # set ANDROID_SDK_ROOT for this step using runner.temp evaluated at runtime
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
           mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools"
           cd "${ANDROID_SDK_ROOT}/cmdline-tools"
@@ -33,6 +33,8 @@ jobs:
         shell: bash
 
       - name: Accept licenses & install SDK packages
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
           yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
           "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" "tools" "patcher;v4" --verbose
@@ -42,8 +44,10 @@ jobs:
         run: chmod +x ./gradlew || true
 
       - name: Print environment (for debugging)
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
-          echo "JAVA_HOME=$JAVA_HOME"
+          echo "JAVA_HOME=$(java -version 2>&1 | head -n 1)"
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           ./gradlew -v
         shell: bash
