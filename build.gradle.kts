@@ -1,18 +1,13 @@
-// Top-level build.gradle.kts (minimal, ensures repositories available)
+// Top-level build.gradle.kts — minimal safe version.
+// Repositories are configured in settings.gradle.kts (dependencyResolutionManagement).
+
+// You can add common pluginManagement or buildscript settings here if needed.
 buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+    // intentionally empty: repositories are provided in settings.gradle.kts
     dependencies {
-        // optional: you can add classpath plugins here if required
+        // add buildscript classpath entries here only if absolutely necessary
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
+// Keep this file minimal; avoid calling `repositories { ... }` here
+// as settings.gradle.kts configures repositories centrally.
