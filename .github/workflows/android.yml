@@ -23,11 +23,10 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Set up Android SDK and packages
-        uses: android-actions/setup-sdk@v2
+      - name: Set up Android SDK (commandline tools + packages)
+        uses: android-actions/setup-android@v2
         with:
           sdk_root: ${{ env.ANDROID_SDK_ROOT }}
-          # packages to install; adjust versions if your project needs different ones
           packages: |
             platform-tools
             platforms;android-34
@@ -36,11 +35,11 @@ jobs:
             build-tools;33.0.1
             cmdline-tools;9.1.0
 
-      - name: Accept Android SDK licenses
-        run: |
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
+      - name: Ensure SDK licenses accepted
         env:
           PATH: ${{ env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin:${{ env.PATH }}
+        run: |
+          yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
