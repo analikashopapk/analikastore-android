@@ -1,4 +1,4 @@
-name: Android CI (defensive)
+name: Android CI (robust-download)
 
 on:
   push:
@@ -15,9 +15,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Ensure gradlew is executable
+      - name: Ensure gradlew exists & list files
         run: |
           if [ -f "./gradlew" ]; then chmod +x ./gradlew; fi
+          echo "Repo root files:"
           ls -la
 
       - name: Setup JDK 17
@@ -26,24 +27,54 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Install Android SDK cmdline tools
+      - name: Try download Android command-line tools (robust)
+        # uses runner.temp at step-level (allowed)
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+        run: |
+          set -euo pipefail
+          mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools"
+          cd "${ANDROID_SDK_ROOT}/cmdline-tools"
+          echo "Trying to download Android command-line tools to ${ANDROID_SDK_ROOT}/cmdline-tools"
+          # list of candidate URLs (fallback order)
+          urls=(
+            "https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip"
+            "https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip"
+            "https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
+            "https://dl.google.com/android/repository/commandlinetools-linux-101.0.0_latest.zip"
+          )
+          success=0
+          for u in "${urls[@]}"; do
+            echo "Attempting: $u"
+            if curl -fsSL "$u" -o cmdline.zip; then
+              echo "Downloaded from $u"
+              unzip -q cmdline.zip
+              # Some zips unpack into 'cmdline-tools' or into tools root — normalize
+              if [ -d "cmdline-tools" ]; then
+                mv cmdline-tools latest || true
+              else
+                mkdir -p latest
+                mv * latest/ || true
+              fi
+              success=1
+              break
+            else
+              echo "Failed to download from: $u"
+            fi
+          done
+          if [ "$success" -ne 1 ]; then
+            echo "ERROR: Could not download Android command-line tools from known URLs."
+            exit 1
+          fi
+        shell: bash
+
+      - name: Install SDK packages & accept licenses
         env:
           ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
           set -e
-          mkdir -p "${ANDROID_SDK_ROOT}/cmdline-tools"
-          cd "${ANDROID_SDK_ROOT}/cmdline-tools"
-          curl -sSfL "https://dl.google.com/android/repository/commandlinetools-linux-101.0.0_latest.zip" -o cmdline.zip
-          unzip -q cmdline.zip
-          mv cmdline-tools latest || true
-        shell: bash
-
-      - name: Install SDK packages and accept licenses
-        env:
-          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
-        run: |
           yes | "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" "patcher;v4" --verbose
+          "${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0" --verbose
         shell: bash
 
       - name: Cache Gradle & dependencies
@@ -57,18 +88,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Show environment & Gradle wrapper
+      - name: Print environment (debug)
         env:
           ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
         run: |
           echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           ./gradlew -v || true
-          echo "Files in repo root:"
-          ls -la
-          echo "Files in gradle/wrapper:"
+          echo "Listing gradle/wrapper files:"
           ls -la gradle/wrapper || true
+        shell: bash
 
-      - name: Build Debug APK (with stacktrace)
+      - name: Build Debug APK
         env:
           ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
           GRADLE_OPTS: "-Xmx1536m"
