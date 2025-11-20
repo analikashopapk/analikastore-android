@@ -45,3 +45,14 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("com.google.firebase:firebase-messaging:23.2.4")
 }
+dependencies {
+    // Use Firebase BoM to manage versions centrally
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    // Add the libraries you need WITHOUT versions (BoM controls versions)
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    // If you had non-ktx usage, you can also use:
+    // implementation("com.google.firebase:firebase-messaging")
+
+    // ... keep your other dependencies unchanged ...
+}
