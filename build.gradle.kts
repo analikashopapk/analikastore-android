@@ -1,13 +1,19 @@
-// Top-level build.gradle.kts — minimal safe version.
-// Repositories are configured in settings.gradle.kts (dependencyResolutionManagement).
+plugins {
+    // provide plugin versions for projects
+    id("com.android.application") version "8.1.0" apply false
+    kotlin("android") version "1.8.22" apply false
+    id("com.google.gms.google-services") version "4.3.15" apply false
+}
 
-// You can add common pluginManagement or buildscript settings here if needed.
 buildscript {
-    // intentionally empty: repositories are provided in settings.gradle.kts
+    repositories {
+        google()
+        mavenCentral()
+    }
     dependencies {
-        // add buildscript classpath entries here only if absolutely necessary
+        classpath("com.google.gms:google-services:4.3.15")
     }
 }
 
-// Keep this file minimal; avoid calling `repositories { ... }` here
-// as settings.gradle.kts configures repositories centrally.
+// Keep other existing settings below (if you already have other content, keep it).
+// This file mainly provides plugin versions to the plugin portal and Google repo.
