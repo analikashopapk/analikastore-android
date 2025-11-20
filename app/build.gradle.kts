@@ -38,8 +38,9 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
     // Firebase libraries (no explicit versions when using BOM)
-    implementation("com.google.firebase:firebase-messaging-ktx")
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
     // Common Android libraries — keep these or update to match your project
     implementation("androidx.core:core-ktx:1.10.1")
