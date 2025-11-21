@@ -50,7 +50,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
 
     // Kotlin stdlib (matches plugin)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
     // Lottie for splash animation
     implementation("com.airbnb.android:lottie:5.2.0")
