@@ -31,6 +31,7 @@ android {
         }
     }
 
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -53,7 +54,15 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
     // Lottie for splash animation
-    implementation("com.airbnb.android:lottie:5.2.0")
+    implementation("com.airbnb.android:lottie:6.1.0")
+
+xmlns:app="http://schemas.android.com/apk/res-auto"
+...
+<com.airbnb.lottie.LottieAnimationView
+    app:lottie_rawRes="@raw/your_animation"
+    app:lottie_autoPlay="true"
+    app:lottie_loop="true" />
+
 
     // AndroidX / UI
     implementation("androidx.core:core-ktx:1.10.1")
