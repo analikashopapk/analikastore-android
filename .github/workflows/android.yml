@@ -41,8 +41,9 @@ jobs:
         run: |
           yes | sdkmanager --sdk_root=${ANDROID_SDK_ROOT} --licenses || true
 
-      - name: Cache Gradle packages
+      - name: Cache Gradle packages (non-blocking while debugging)
         uses: actions/cache@v4
+        continue-on-error: true
         with:
           path: |
             ~/.gradle/caches
@@ -51,17 +52,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build with Gradle 8.2
-        uses: gradle/gradle-build-action@v2
-        with:
-          gradle-version: 8.2
-          arguments: ":app:assembleDebug"
-        env:
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
-
-      - name: Upload artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+      - name: Print environment & Gradle wrapper info
+        run: |
+          echo "JAVA_HOME=$JAVA](#)
+
