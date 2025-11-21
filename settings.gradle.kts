@@ -1,3 +1,5 @@
+// settings.gradle.kts
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -7,11 +9,13 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // prefer central repositories defined here; disallow project-level repos
+    // Prevent repositories in project build files when you prefer settings repositories
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
-
-        // optional additional repo
+    repositories {
+        google()
+        mavenCentral()
+        // JitPack if you need it
         maven("https://jitpack.io")
     }
 }
