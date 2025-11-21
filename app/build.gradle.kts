@@ -17,6 +17,16 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+buildFeatures {
+    viewBinding = true
+    // To enable Jetpack Compose, uncomment:
+    // compose = true
+}
+
+// If Compose is enabled, also set compose options:
+// composeOptions {
+//     kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+// }
 
     buildTypes {
         getByName("debug") {
