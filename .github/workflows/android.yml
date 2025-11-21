@@ -36,5 +36,6 @@ jobs:
           arguments: ':app:assembleDebug --no-daemon'
 
       # Optional: if you ever run ./gradlew directly in a step, make sure it's executable:
-        - name: Make gradlew executable
-            run: chmod +x ./gradlew
+      - name: Make gradlew executable (optional)
+        if: always()
+        run: chmod +x ./gradlew || true
