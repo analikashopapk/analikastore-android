@@ -9,13 +9,13 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // Prevent repositories in project build files when you prefer settings repositories
+    // Choose FAIL_ON_PROJECT_REPOS to force using settings repositories only
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
     repositories {
         google()
         mavenCentral()
-        // JitPack if you need it
+        // Add jitpack if you really need it:
         maven("https://jitpack.io")
     }
 }
