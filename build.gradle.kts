@@ -1,23 +1,13 @@
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-        google()
-        mavenCentral()
-    }
-    plugins {
-        // pick versions compatible with your Android Gradle Plugin and Kotlin libs
-        id("com.android.application") version "8.2.1"
-        id("org.jetbrains.kotlin.android") version "2.1.0" // or 1.9.x depending on your kotlin libs
-        id("com.google.gms.google-services") version "4.4.0" // example
-    }
+// Only one plugins block here — we *do not* specify versions here because settings.gradle.kts manages them.
+plugins {
+    // declare plugin coordinates for use by subprojects, but don't apply them in root
+    id("com.android.application") apply false
+    id("org.jetbrains.kotlin.android") apply false
+    id("com.google.gms.google-services") apply false
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
+tasks.register("clean", Delete::class) {
+    delete(rootProject.buildDir)
 }
-rootProject.name = "analikastore-android"
-include(":app")
+
+// Put other root-level configuration here if needed (e.g., versions, common repositories)
