@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    // apply the google services plugin so firebase json is processed
+    // don't specify version here — defined in root buildscript
     id("com.google.gms.google-services")
 }
 
@@ -21,7 +21,7 @@ android {
         getByName("debug") {
             isMinifyEnabled = false
         }
-        create("release") {
+        getByName("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -35,6 +35,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    // Kotlin options: if this fails, alternatively set via tasks.withType<KotlinCompile>
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -47,6 +48,9 @@ dependencies {
     // Firebase (no explicit versions when using BOM)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
+
+    // Kotlin stdlib — optional when using Kotlin plugin; ok to keep
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
     // Lottie for splash animation
     implementation("com.airbnb.android:lottie:6.1.0")
