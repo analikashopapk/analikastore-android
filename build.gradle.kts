@@ -1,19 +1,23 @@
-plugins {
-    // Android Gradle Plugin (AGP)
-    id("com.android.application") version "8.2.1" apply false
-
-    // Kotlin Android
-    kotlin("android") version "1.9.10" apply false
-
-    // Google Services plugin (Firebase, etc.)
-    id("com.google.gms.google-services") version "4.4.0" apply false
-
-   // Make Kotlin 2.1.0 available to modules (do not apply here)
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
-
-    // Make Android Gradle Plugin consistent (use an 8.2.x line compatible with Gradle 8.2)
-    id("com.android.library") version "8.2.1" apply false
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    plugins {
+        // pick versions compatible with your Android Gradle Plugin and Kotlin libs
+        id("com.android.application") version "8.2.1"
+        id("org.jetbrains.kotlin.android") version "2.1.0" // or 1.9.x depending on your kotlin libs
+        id("com.google.gms.google-services") version "4.4.0" // example
+    }
 }
-buildscript {
-    // empty — we prefer pluginManagement via settings.gradle.kts if present
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
+rootProject.name = "analikastore-android"
+include(":app")
