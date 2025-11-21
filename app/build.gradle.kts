@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
+    kotlin("android")
     id("org.jetbrains.kotlin.android")
+    // Do not put version here; root already declared apply false
     id("com.google.gms.google-services")
 }
 
@@ -35,23 +37,20 @@ android {
     }
 
     kotlinOptions {
-        // keep Kotlin JVM target consistent with Java version
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    // Firebase BOM – controls Firebase versions
+    // Use Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    // Firebase (no explicit versions when using BOM)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
-    // Kotlin stdlib matching Kotlin plugin version
+    // Kotlin stdlib aligned with plugin
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
-    // Lottie for splash animation
     implementation("com.airbnb.android:lottie:6.1.0")
 
     // AndroidX / UI
