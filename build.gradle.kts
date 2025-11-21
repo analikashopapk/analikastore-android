@@ -1,12 +1,13 @@
-// root build.gradle.kts
+// build.gradle.kts (root)
+
 plugins {
-    // AGP (modules apply it with `apply false`)
+    // AGP (apply false — modules will apply it)
     id("com.android.application") version "8.2.0" apply false
 
-    // Kotlin plugin (keep version consistent with libs)
+    // Kotlin plugin — match libraries (logs showed Kotlin metadata 2.1.0)
     id("org.jetbrains.kotlin.android") version "2.1.0" apply false
 
-    // Google services plugin for Firebase (declared here)
+    // Google services plugin for Firebase — declare version here (apply false)
     id("com.google.gms.google-services") version "4.3.15" apply false
 }
 
