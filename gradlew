@@ -5,3 +5,9 @@ git add gradlew gradlew.bat gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gra
 git commit -m "Add Gradle wrapper"
 git push
 
+# make sure the wrapper exists and is executable
+ls -la ./gradlew
+# if file exists but not executable:
+chmod +x ./gradlew
+# run
+./gradlew :app:assembleDebug --no-daemon
