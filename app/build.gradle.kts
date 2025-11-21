@@ -58,4 +58,8 @@ dependencies {
 
     // Optional: lifecycle/runtime
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+   // explicit Kotlin stdlib to ensure compatible kotlin runtime is on classpath
+   implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+
 }
