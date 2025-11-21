@@ -17,8 +17,12 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            isMinifyEnabled = false
+        }
         getByName("release") {
             isMinifyEnabled = false
+            // If you enable minify/proguard later, add proguard rules.
             // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -31,37 +35,43 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    // packagingOptions or other settings can go here if needed
+}
+
+repositories {
+    // Project-level repositories are normally configured in settings.gradle.kts,
+    // but having these here is safe if your settings file doesn't set repositoriesMode=FAIL_ON_PROJECT_REPOS
+    google()
+    mavenCentral()
 }
 
 dependencies {
-    // Firebase BOM — single source of truth for firebase versions
+    // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    // Firebase libraries (use main artifacts; Kotlin extensions are included)
+    // Firebase artifacts (no explicit versions; BOM controls them)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
-    // Common Android libraries — keep/update as needed
+    // Kotlin stdlib matching kotlin plugin
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
+
+    // Lottie (if you use it)
+    implementation("com.airbnb.android:lottie:5.2.0")
+
+    // Common Android libs used previously
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
 
-    // Networking & image loading placeholders (adjust if your project differs)
+    // Networking / image libs (adjust if your project differs)
     implementation("io.coil-kt:coil:2.4.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // add Lottie animation library
-    implementation("com.airbnb.android:lottie:5.2.0")
-
-    // Optional: lifecycle/runtime
+    // lifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-
-   // explicit Kotlin stdlib to ensure compatible kotlin runtime is on classpath
-   implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
-
-  // ensure Kotlin stdlib matches the kotlin plugin
-  implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
 }
