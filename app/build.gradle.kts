@@ -1,9 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android") // keep only one kotlin plugin
-    id("com.google.gms.google-services")
+    kotlin("android")
+    id("com.google.gms.google-services") // if you need google-services plugin in app
 }
 
 android {
@@ -17,16 +15,6 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
-buildFeatures {
-    viewBinding = true
-    // To enable Jetpack Compose, uncomment:
-    // compose = true
-}
-
-// If Compose is enabled, also set compose options:
-// composeOptions {
-//     kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-// }
 
     buildTypes {
         getByName("debug") {
@@ -45,15 +33,9 @@ buildFeatures {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    // If you prefer android.kotlinOptions (works with Kotlin Android plugin), you can keep:
-    // kotlinOptions {
-    //     jvmTarget = "17"
-    // }
-}
 
-// Ensure kotlin jvm target consistently:
-tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
+        // Keep this consistent with Kotlin plugin/Gradle settings in root project
         jvmTarget = "17"
     }
 }
@@ -63,11 +45,12 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
     // Firebase (no explicit versions when using BOM)
-    implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // (OPTIONAL) You usually don't need to add stdlib explicitly. If you do, ensure it matches the Kotlin plugin version.
-    // implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
+    // NOTE: remove explicit kotlin-stdlib here unless you need to set a specific version.
+    // If you do include it, make sure the version matches the Kotlin Gradle plugin version.
+    // implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0") // <- only if plugin is 2.1.x
 
     // Lottie for splash animation
     implementation("com.airbnb.android:lottie:6.1.0")
