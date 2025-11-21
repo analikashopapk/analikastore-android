@@ -1,13 +1,25 @@
-// Only one plugins block here — we *do not* specify versions here because settings.gradle.kts manages them.
+// Root build.gradle.kts
 plugins {
-    // declare plugin coordinates for use by subprojects, but don't apply them in root
-    id("com.android.application") apply false
-    id("org.jetbrains.kotlin.android") apply false
-    id("com.google.gms.google-services") apply false
+    id("com.android.application") version "8.1.0" apply false       // <- replace with your AGP version
+    id("org.jetbrains.kotlin.android") version "1.9.10" apply false // <- replace with your Kotlin version
+    id("com.google.gms.google-services") version "4.4.0" apply false // <- replace with your Google services version
+}
+
+// Provide repositories so plugin resolution and subprojects can resolve dependencies
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
-
-// Put other root-level configuration here if needed (e.g., versions, common repositories)
