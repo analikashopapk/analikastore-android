@@ -1,14 +1,13 @@
 plugins {
-    // Keep AGP 8.1 (compatible with Gradle 8.1 used in CI)
-    id("com.android.application") version "8.1.0" apply false
+    // Android Gradle Plugin (AGP)
+    id("com.android.application") version "8.2.1" apply false
 
-    // Kotlin plugin bumped to 1.9.10 to match library metadata
+    // Kotlin Android
     kotlin("android") version "1.9.10" apply false
 
-    // Google services (apply in app module if needed)
-    id("com.google.gms.google-services") version "4.3.15" apply false
+    // Google Services plugin (Firebase, etc.)
+    id("com.google.gms.google-services") version "4.4.0" apply false
 }
-
 buildscript {
     // empty — we prefer pluginManagement via settings.gradle.kts if present
 }
