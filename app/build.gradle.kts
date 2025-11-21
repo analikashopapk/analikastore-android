@@ -1,13 +1,13 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
-    kotlin("android")
-    id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.android") // keep only one kotlin plugin
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.analikastore.app"
-
     compileSdk = 34
 
     defaultConfig {
@@ -31,12 +31,18 @@ android {
         }
     }
 
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    // If you prefer android.kotlinOptions (works with Kotlin Android plugin), you can keep:
+    // kotlinOptions {
+    //     jvmTarget = "17"
+    // }
+}
 
+// Ensure kotlin jvm target consistently:
+tasks.withType(KotlinCompile::class.java).configureEach {
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -50,19 +56,11 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
-    // Kotlin stdlib (matches plugin)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
+    // (OPTIONAL) You usually don't need to add stdlib explicitly. If you do, ensure it matches the Kotlin plugin version.
+    // implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
     // Lottie for splash animation
     implementation("com.airbnb.android:lottie:6.1.0")
-
-xmlns:app="http://schemas.android.com/apk/res-auto"
-...
-<com.airbnb.lottie.LottieAnimationView
-    app:lottie_rawRes="@raw/your_animation"
-    app:lottie_autoPlay="true"
-    app:lottie_loop="true" />
-
 
     // AndroidX / UI
     implementation("androidx.core:core-ktx:1.10.1")
