@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    // don't specify version here — defined in root buildscript
     id("com.google.gms.google-services")
 }
 
@@ -35,21 +34,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    // Kotlin options: if this fails, alternatively set via tasks.withType<KotlinCompile>
     kotlinOptions {
+        // keep Kotlin JVM target consistent with Java version
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    // Firebase BOM – controls all Firebase versions
+    // Firebase BOM – controls Firebase versions
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
     // Firebase (no explicit versions when using BOM)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
-    // Kotlin stdlib — optional when using Kotlin plugin; ok to keep
+    // Kotlin stdlib matching Kotlin plugin version
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
     // Lottie for splash animation
