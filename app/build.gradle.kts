@@ -62,4 +62,6 @@ dependencies {
    // explicit Kotlin stdlib to ensure compatible kotlin runtime is on classpath
    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
 
+  // ensure Kotlin stdlib matches the kotlin plugin
+  implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.10")
 }
