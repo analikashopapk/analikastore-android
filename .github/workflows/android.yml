@@ -34,8 +34,3 @@ jobs:
         with:
           gradle-version: '8.2'
           arguments: ':app:assembleDebug --no-daemon'
-
-      # Optional: if you ever run ./gradlew directly in a step, make sure it's executable:
-      - name: Make gradlew executable (optional)
-        if: always()
-        run: chmod +x ./gradlew || true
