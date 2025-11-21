@@ -1,7 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services") // version provided in root build.gradle.kts
+    // apply the google services plugin so firebase json is processed
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -20,7 +21,7 @@ android {
         getByName("debug") {
             isMinifyEnabled = false
         }
-        getByName("release") {
+        create("release") {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -46,9 +47,6 @@ dependencies {
     // Firebase (no explicit versions when using BOM)
     implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
-
-    // Kotlin stdlib: must match Kotlin plugin version (2.1.0)
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
 
     // Lottie for splash animation
     implementation("com.airbnb.android:lottie:6.1.0")
