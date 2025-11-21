@@ -11,3 +11,11 @@ plugins {
 buildscript {
     // empty — we prefer pluginManagement via settings.gradle.kts if present
 }
+plugins {
+    // Make Kotlin 2.1.0 available to modules (do not apply here)
+    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
+
+    // Make Android Gradle Plugin consistent (use an 8.2.x line compatible with Gradle 8.2)
+    id("com.android.application") version "8.2.1" apply false
+    id("com.android.library") version "8.2.1" apply false
+}
