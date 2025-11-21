@@ -1,26 +1,23 @@
+// settings.gradle.kts - replace your current file with this exact content
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
         mavenCentral()
     }
-    plugins {
-        // pick versions compatible with your Android Gradle Plugin and Kotlin libs
-        id("com.android.application") version "8.2.1"
-        id("org.jetbrains.kotlin.android") version "2.1.0"
-        id("org.jetbrains.kotlin.jvm") version "2.1.0"
-        id("com.google.gms.google-services") version "4.4.0"
-    }
+    // Optional: declare plugin versions here if you want centralized plugin versions.
 }
 
 dependencyResolutionManagement {
+    // Prefer repositories declared here (in settings) over repositories declared in build scripts
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
     repositories {
         google()
         mavenCentral()
+        // add others only if required, e.g. maven("https://jitpack.io")
     }
 }
 
-}
 rootProject.name = "analikastore-android"
 include(":app")
