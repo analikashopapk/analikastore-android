@@ -10,9 +10,7 @@ dependencyResolutionManagement {
     // prefer central repositories defined here; disallow project-level repos
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
 
-    repositories {
-        google()
-        mavenCentral()
+
         // optional additional repo
         maven("https://jitpack.io")
     }
