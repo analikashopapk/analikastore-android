@@ -45,14 +45,14 @@ jobs:
             echo "FIREBASE_JSON secret not set — skipping google-services.json restore"
           fi
 
-- name: Use Gradle wrapper if present, otherwise install Gradle
+      - name: Use Gradle wrapper if present, otherwise install Gradle and build
         run: |
           if [ -x "./gradlew" ]; then
             echo "Gradle wrapper found — using ./gradlew"
             chmod +x ./gradlew
             ./gradlew :app:assembleDebug --no-daemon --stacktrace
           else
-            echo "Gradle wrapper not found — installing Gradle from apt and running gradle"
+            echo "Gradle wrapper not found — installing Gradle and running gradle"
             sudo apt-get update -y
             sudo apt-get install -y gradle
             gradle -v
@@ -67,8 +67,8 @@ jobs:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
 
-  # Release signing job: triggered manually (workflow_dispatch). We DO NOT use secrets.* in job-level 'if'.
   release-sign:
+    # Manual dispatch will run this job; at runtime we check for the signing secret.
     if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     needs: build
@@ -82,7 +82,7 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Check for signing key and build signed release (runtime check)
+      - name: Check for signing key and build signed release (runtime)
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
@@ -91,23 +91,3 @@ jobs:
         run: |
           if [ -z "$SIGNING_KEY" ]; then
             echo "SIGNING_KEY not set — skipping signed release build."
-            exit 0
-          fi
-          echo "SIGNING_KEY found — importing keystore..."
-          echo "$SIGNING_KEY" | base64 --decode > signing.keystore
-          ls -l signing.keystore
-          echo "Starting signed release build..."
-          ./gradlew :app:assembleRelease \
-            -Pandroid.injected.signing.store.file=signing.keystore \
-            -Pandroid.injected.signing.store.password="${KEYSTORE_PASSWORD}" \
-            -Pandroid.injected.signing.key.alias="${KEY_ALIAS}" \
-            -Pandroid.injected.signing.key.password="${KEY_PASSWORD}" \
-            --no-daemon --stacktrace
-          echo "Signed release build finished. Listing artifact:"
-          ls -l app/build/outputs/apk/release || true
-
-      - name: Upload release APK (if produced)
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-apk
-          path: app/build/outputs/apk/release/*.apk
