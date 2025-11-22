@@ -25,18 +25,16 @@ android {
 }
 
 dependencies {
-    // Put BOM once, before firebase dependencies
+    // Use Firebase BOM once, before any firebase artifacts:
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    // Use BOM-managed artifacts (no versions)
+    // Firebase artifacts managed by BOM — NO versions here:
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // Lottie (fixes lottie attributes in layout)
-    implementation("com.airbnb.android:lottie:6.1.0")
-
+    // Other libraries
+    implementation("com.airbnb.android:lottie:6.1.0") // if you need Lottie attributes
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    // ... other dependencies
 }
