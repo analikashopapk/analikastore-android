@@ -32,23 +32,24 @@ android {
     }
 }
 
+// inside app/build.gradle.kts — replace the entire dependencies { ... } block with this
 dependencies {
-    // Use Firebase BOM to manage Firebase libs versions centrally.
-    // Put this BEFORE any firebase implementation(...) lines.
+    // Firebase BOM (put this first — it supplies versions for KTX/artifact coordinates without explicit versions)
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    // Firebase libs (no explicit versions needed when BOM is used)
+    // Firebase libraries (no versions needed because BOM provides them)
     implementation("com.google.firebase:firebase-messaging-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // If you additionally need non-KTX artifacts (rare with BOM), list them AFTER the BOM:
+    // Optional: if you need non-ktx artifacts explicitly (usually not needed when using BOM)
     // implementation("com.google.firebase:firebase-messaging")
     // implementation("com.google.firebase:firebase-analytics")
 
-    // Common Android libraries — keep or adjust versions as needed
+    // Common Android libraries
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("androidx.recyclerview:recyclerview:1.3.0")
-    // ... other dependencies ...
+
+    // other dependencies...
 }
