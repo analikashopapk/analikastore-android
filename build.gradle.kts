@@ -1,16 +1,14 @@
-// build.gradle.kts (root)
-
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    // AGP (apply false — modules will apply it)
-    id("com.android.application") version "8.2.0" apply false
-
-    // Kotlin plugin — match libraries (logs showed Kotlin metadata 2.1.0)
-    id("org.jetbrains.kotlin.android") version "2.1.0" apply false
-
-    // Google services plugin for Firebase — declare version here (apply false)
-    id("com.google.gms.google-services") version "4.3.15" apply false
+    // no-op here; module plugins are applied in module build files
 }
 
-tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // if you used any buildscript classpath plugins, declare them here (preferred: use plugins {} in module build files)
+    }
 }
