@@ -45,11 +45,19 @@ jobs:
             echo "FIREBASE_JSON secret not set — skipping google-services.json restore"
           fi
 
-      - name: Grant execute to gradlew
-        run: chmod +x ./gradlew
-
-      - name: Assemble Debug APK
-        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+- name: Use Gradle wrapper if present, otherwise install Gradle
+        run: |
+          if [ -x "./gradlew" ]; then
+            echo "Gradle wrapper found — using ./gradlew"
+            chmod +x ./gradlew
+            ./gradlew :app:assembleDebug --no-daemon --stacktrace
+          else
+            echo "Gradle wrapper not found — installing Gradle from apt and running gradle"
+            sudo apt-get update -y
+            sudo apt-get install -y gradle
+            gradle -v
+            gradle :app:assembleDebug --no-daemon --stacktrace
+          fi
         env:
           GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
 
