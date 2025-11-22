@@ -1,9 +1,6 @@
 plugins {
     id("com.android.application")
-    kotlin("android")
     id("org.jetbrains.kotlin.android")
-    // Do not put version here; root already declared apply false
-    id("com.google.gms.google-services")
 }
 
 android {
@@ -12,22 +9,18 @@ android {
 
     defaultConfig {
         applicationId = "com.analikastore.app"
-        minSdk = 23
+        minSdk = 23              // updated for Firebase messaging compatibility
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("debug") {
+        release {
             isMinifyEnabled = false
-        }
-        getByName("release") {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            // proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
 
@@ -39,32 +32,30 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    // If your project used viewBinding or dataBinding, enable here:
+    // buildFeatures { viewBinding = true }
 }
 
 dependencies {
-    // Use Firebase BOM
+    // Firebase BOM manages versions
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    implementation("com.google.firebase:firebase-messaging")
-    implementation("com.google.firebase:firebase-analytics")
+    // Firebase libs (no version numbers when using BOM)
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-analytics-ktx")
 
-    // Kotlin stdlib aligned with plugin
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
-
+    // AndroidX / material
+    implementation("androidx.core:core-ktx:1.10.1")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    
+    // Lottie (if you use it)
     implementation("com.airbnb.android:lottie:6.1.0")
 
-    // AndroidX / UI
-    implementation("androidx.core:core-ktx:1.10.1")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("androidx.recyclerview:recyclerview:1.3.0")
-
-    // Networking & images
-    implementation("io.coil-kt:coil:2.4.0")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
-    // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    // Add other dependencies your app needs here...
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 }
