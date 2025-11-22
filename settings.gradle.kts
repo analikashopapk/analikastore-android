@@ -1,4 +1,4 @@
-// settings.gradle.kts
+rootProject.name = "analikastore-android"
 
 pluginManagement {
     repositories {
@@ -9,16 +9,12 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    // Choose FAIL_ON_PROJECT_REPOS to force using settings repositories only
+    // Prefer settings repositories over project repositories - declare all repos here
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-
     repositories {
         google()
         mavenCentral()
-        // Add jitpack if you really need it:
-        maven("https://jitpack.io")
     }
 }
 
-rootProject.name = "analikastore-android"
 include(":app")
