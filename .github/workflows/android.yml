@@ -59,10 +59,8 @@ jobs:
           name: app-debug-apk
           path: app/build/outputs/apk/debug/*.apk
 
-  # Release signing job: only triggered manually (workflow_dispatch),
-  # but we MUST NOT reference secrets.* inside the 'if' expression.
+  # Release signing job: triggered manually (workflow_dispatch). We DO NOT use secrets.* in job-level 'if'.
   release-sign:
-    # allow manual dispatch to run this job; at runtime we decide whether to sign.
     if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     needs: build
@@ -76,32 +74,31 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Check for signing key secret and import if present
+      - name: Check for signing key and build signed release (runtime check)
         env:
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           if [ -z "$SIGNING_KEY" ]; then
-            echo "SIGNING_KEY not set — skipping signing and release build."
+            echo "SIGNING_KEY not set — skipping signed release build."
             exit 0
           fi
+          echo "SIGNING_KEY found — importing keystore..."
           echo "$SIGNING_KEY" | base64 --decode > signing.keystore
-          echo "Imported signing.keystore"
           ls -l signing.keystore
-
-      - name: Build Release APK (signed)
-        if: ${{ secrets.SIGNING_KEY != '' }}
-        env:
-          GRADLE_USER_HOME: ${{ github.workspace }}/.gradle
-        run: |
+          echo "Starting signed release build..."
           ./gradlew :app:assembleRelease \
             -Pandroid.injected.signing.store.file=signing.keystore \
-            -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
-            -Pandroid.injected.signing.key.alias="${{ secrets.KEY_ALIAS }}" \
-            -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}" \
+            -Pandroid.injected.signing.store.password="${KEYSTORE_PASSWORD}" \
+            -Pandroid.injected.signing.key.alias="${KEY_ALIAS}" \
+            -Pandroid.injected.signing.key.password="${KEY_PASSWORD}" \
             --no-daemon --stacktrace
+          echo "Signed release build finished. Listing artifact:"
+          ls -l app/build/outputs/apk/release || true
 
-      - name: Upload release APK
-        if: ${{ secrets.SIGNING_KEY != '' }}
+      - name: Upload release APK (if produced)
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
